@@ -15,7 +15,7 @@ char* inserDotInResults(const char* results, int dotLocation);
 
 
 bool isInteger(const char* number1){
-    char* temp = number1;
+    char* temp = (char*)number1;
     while( *temp != '\0'){
         int integer = (*temp - 48);
         if(integer < 0 || integer > 9)
@@ -25,7 +25,7 @@ bool isInteger(const char* number1){
     return true;
 };
 int findDotLocation(const char* floatNumber){
-    char* temp = floatNumber;
+    char* temp = (char*)floatNumber;
     int location  = 0;
     while( *temp != '\0'){
         location++;
@@ -43,7 +43,7 @@ char* changeFloatToInteger(const char* floatNumber){
     char* integerNumber = (char*)malloc(numberLength);
     if(integerNumber == NULL){
         printf("Failed! Cannot malloc!!\n");
-        return -1;
+        return ;
     }
     memset(integerNumber, '0', numberLength);
     integerNumber[numberLength - 1] = '\0';
@@ -113,14 +113,19 @@ char* multiLargeFloatNumber(const char* floatNumber1, const char* floatNumber2){
 
     char* integerNumber1 = changeFloatToInteger(floatNumber1);
     char* integerNumber2 = changeFloatToInteger(floatNumber2);
+    char* temp = multiLargeNumber(integerNumber1, integerNumber2);
 
-    char*  results = inserDotInResults(multiLargeNumber(integerNumber1, integerNumber2),
-            resultDecimalNumbers);
+    char*  results = inserDotInResults(temp, resultDecimalNumbers);
 
-    free(integerNumber1);
-    free(integerNumber2);
+    if(integerNumber1 != NULL)
+        free(integerNumber1);
+    if(integerNumber2 != NULL)
+        free(integerNumber2);
+ //  if(temp != NULL)
+ //      free(temp);
 
     integerNumber2 = integerNumber1 = NULL;
+    temp = NULL;
     return results;
 
 }
@@ -181,8 +186,8 @@ int main()
 //   if(results == NULL) return -1;
 //   printf("results: %s\n", results);
 //
-    char* floatNumber1 = "1.111";
-    char* floatNumber2 = "11.11";
+    char* floatNumber1 = "0.111";
+    char* floatNumber2 = "0.11";
 
     char* results = multiLargeFloatNumber(floatNumber1, floatNumber2);
     if(results == NULL) return -1;
