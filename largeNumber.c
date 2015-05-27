@@ -30,15 +30,16 @@ bool isFloatNumber(const char* floatNumber){
 	bool hasDot = false;
 	bool allNumbers = false;
 	while (*temp != '\0'){
-		int integer = (*temp - 48);
+        char character = *temp;
+        temp++;
+		int integer = (character - 48);
 		if (integer < 0 || integer > 9){
-			if (*temp == '.'){
+			if (character == '.'){
 				hasDot = true;
 				continue;
 			}
 			return false;
 		}
-		temp++;
 		allNumbers = true;
 	}
 
@@ -179,15 +180,16 @@ char* multiLargeIntegerNumber(const char* largeNumber1, const char* largeNumber2
 
 	int i = 0, j = 0;
 
-	for (i = number1Length - 1; i >= 0; i--){
+	for (i = number2Length - 1; i >= 0; i--){
 		addFlag = 0;
-		for (j = number2Length - 1; j >= 0; j--){
+		for (j = number1Length - 1; j >= 0; j--){
 			int location = i + j + 1;
-			int temp1 = ((int)largeNumber1[i] - 48) * ((int)largeNumber2[j] - 48);
-			int temp2 = temp1 + addFlag + (results[location] - 48);
-			addFlag = (int)(temp2 / 10);
-			results[location] = (char)(temp2 % 10 + 48);
+			int temp1 = ((int)largeNumber1[i] - 48) * ((int)largeNumber2[j] - 48) + (results[location] - 48);
+            int remain = (temp1 + addFlag) % 10;
+            addFlag = (temp1+addFlag) / 10;
+            results[location] = (char)(remain + 48);
 		}
+        results[i] = (char)(addFlag + 48);
 	}
 
 	if (addFlag != 0)
@@ -200,14 +202,15 @@ char* multiLargeIntegerNumber(const char* largeNumber1, const char* largeNumber2
 }
 
 char* multiLargeNumber(const char* number1, const char* number2){
+    printf("%s, number1 = %s, number2 = %s\n", __func__, number1, number2);
 	char* result = NULL;
 	if (isFloatNumber(number1) || isFloatNumber(number2)){
-		result = multiLargeFloatNumber(number1, number2);
 		printf("Float number calculate\n");
+		result = multiLargeFloatNumber(number1, number2);
 	}
 	else if (isInteger(number1) && isInteger(number2)){
-		result = multiLargeIntegerNumber(number1, number2);
 		printf("Integer number calculate\n");
+		result = multiLargeIntegerNumber(number1, number2);
 	}
 
 	if (result == NULL)
@@ -216,48 +219,32 @@ char* multiLargeNumber(const char* number1, const char* number2){
 }
 
 char* power(const char* number, int exponent){
-	char* result = '1';
-	if (exponent == 0) return result;
-
-	exponent--;
-	result = multiLargeNumber(number, number);
-	printf("exponent: %d\n", exponent);
-	while (--exponent){
-		printf("exponent: %d\n", exponent);
-		result = multiLargeNumber(result, number);
-	}
-
-	return result;
+    printf("power number = %s, exponent = %d\n", number, exponent);
+	char* result = NULL;
+	if (exponent > 0) {
+        exponent--;
+        printf("exponent: %d\n", exponent);
+        result = multiLargeNumber(number, number);
+        while (--exponent){
+            printf("exponent: %d\n", exponent);
+            result = multiLargeNumber(result, number);
+        }
+    }
+    return result;
 }
 
 int main()
 {
-	//   char* big_number1 = "84112154715464123645";
-	//   char* big_number2 = "1264542187454894612145784214";
-	//
-	//   char* results = multiLargeIntegerNumber(big_number1, big_number2);
-	//   if(results == NULL) return -1;
-	//   printf("results: %s\n", results);
-	//
 
-	//    char* floatNumber1 = "0.111";
-	//    char* floatNumber2 = "0.11";
+	char* floatNumber1 = "95.123";
+	//char* floatNumber1 = "999";
 
-	//   char* results = multiLargeFloatNumber(floatNumber1, floatNumber2);
-	//   if(results == NULL) return -1;
-	//   printf("results: %s\n", results);
-
-
-
-	char* floatNumber1 = "111";
-	char* floatNumber2 = "0.11";
-
-	char* results = power(floatNumber1, 3);
+	char* results = power(floatNumber1, 2);
 	if (results == NULL) return -1;
 	printf("results: %s\n", results);
 
 
-	free(results);
+//    free(results);
 	results = NULL;
 	return 0;
 
