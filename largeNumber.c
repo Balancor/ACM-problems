@@ -222,7 +222,7 @@ char* power(const char* number, int exponent){
 	exponent--;
 	result = multiLargeNumber(number, number);
 	printf("exponent: %d\n", exponent);
-	while (!exponent--){
+	while (--exponent){
 		printf("exponent: %d\n", exponent);
 		result = multiLargeNumber(result, number);
 	}
